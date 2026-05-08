@@ -1,0 +1,20 @@
+const test = require("node:test")
+const assert = require("node:assert/strict")
+const fs = require("node:fs")
+const path = require("node:path")
+
+const html = fs.readFileSync(path.join(__dirname, "..", "Index.html"), "utf8")
+const renderer = fs.readFileSync(path.join(__dirname, "..", "js", "rendered.js"), "utf8")
+
+test("overview pending payroll metric is derived from payroll run status", () => {
+  assert.match(html, /id="pendingPayrollType"/)
+  assert.match(html, /<option value="Monthly">Monthly<\/option>/)
+  assert.match(html, /<option value="Weekly">Weekly<\/option>/)
+  assert.match(html, /<option value="Daily">Daily<\/option>/)
+  assert.match(renderer, /const selectedPendingPayrollType = normalizePayrollSalaryTypeLabel\(overviewPendingPayrollType\)/)
+  assert.match(renderer, /const payrollRunsById = new Map\(/)
+  assert.match(renderer, /getPayrollItems\(\)/)
+  assert.match(renderer, /normalizedStatus !== "rejected"/)
+  assert.match(renderer, /normalizedSalaryType === selectedPendingPayrollType/)
+  assert.match(renderer, /!Boolean\(item\.paid \|\| item\.signed\)/)
+})

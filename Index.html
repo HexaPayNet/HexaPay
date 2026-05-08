@@ -1,0 +1,2064 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+<title>HexaPay</title>
+
+<link rel="stylesheet" href="css/style.css">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sen:wght@400;600;700&display=swap" rel="stylesheet">
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+</head>
+
+<body>
+
+<!-- SIDEBAR -->
+
+<div class="sidebar">
+
+<div class="logo"><img src="Assets/Logo.png" alt="HexaPay" style="width: 200px;"></div>
+
+<nav class="menu">
+  <a class="active" href="#" data-section-target="overview">OVERVIEW</a>
+  <a href="#" data-section-target="workforce">WORKFORCE</a>
+  <a href="#" data-section-target="payroll">PAYROLL</a>
+  <a href="#" data-section-target="worktrack">WORK TRACK</a>
+  <a href="#" data-section-target="financials">FINANCIALS</a>
+  <a href="#" data-section-target="insights">INSIGHTS</a>
+</nav>
+
+</div>
+
+<!-- MAIN -->
+
+<div class="main">
+
+<!-- FIXED TOPBAR -->
+
+<header class="topbar">
+
+<div class="top-left">
+
+<div class="company-selector">
+
+<button id="companyBtn">
+<span id="companyName">Company A</span>
+</button>
+
+<div id="companyDropdown" class="dropdown">
+<div id="companyList"></div>
+<div id="addCompanyTrigger" class="addCompany">+ Add Company</div>
+</div>
+
+</div>
+
+<div class="search-container">
+  <input class="search" placeholder="Search employees, payroll...">
+  <i class="fa-solid fa-magnifying-glass search-icon"></i>
+</div>
+
+</div>
+
+<div class="top-right">
+
+<div class="datetime">
+<div id="date"></div>
+<div id="time"></div>
+</div>
+
+<div class="icons">
+
+  <button id="settingsToggle" class="icon-button" type="button" aria-label="Open settings">
+    <i class="fa-solid fa-gear"></i>
+  </button>
+  <button id="notificationsToggle" class="icon-button" type="button" aria-label="Open notifications">
+    <i class="fa-solid fa-bell"></i>
+  </button>
+  <button id="profileToggle" class="profile" type="button" aria-label="Open profile">
+    <div class="profile-text">
+      <span id="topbarProfileName" class="username">Company A</span>
+      <span id="topbarProfileRole" class="position">Guest</span>
+    </div>
+    <img id="topbarProfileImage" class="profile-avatar" src="Assets/Logo.png" alt="Company logo">
+  </button>
+
+</div>
+
+</header>
+
+<!-- SCROLLABLE CONTENT -->
+
+  <div class="content">
+
+<div id="overview" class="section active-section">
+  <!-- CARDS -->
+<section class="cards">
+
+<div class="card">
+<h4>TOTAL EMPLOYEES</h4>
+<h2 id="totalEmployeesValue">0</h2>
+</div>
+
+<div class="card">
+<h4>ACTIVE EMPLOYEES</h4>
+<h2 id="activeEmployeesValue">0</h2>
+</div>
+
+<div class="card highlight">
+<h4>THIS MONTH'S PAYROLL</h4>
+<h2 id="monthlyPayrollValue">0</h2>
+</div>
+
+<div class="card pending-payroll-card">
+<h4>PENDING PAYROLL</h4>
+<label class="metric-filter" for="pendingPayrollType">
+<span>View</span>
+<select id="pendingPayrollType">
+<option value="Monthly">Monthly</option>
+<option value="Weekly">Weekly</option>
+<option value="Daily">Daily</option>
+</select>
+</label>
+<h2 id="pendingPayrollValue">0</h2>
+</div>
+
+</section>
+
+<!-- CHARTS -->
+
+<section class="charts">
+
+<div class="chart-box">
+<div class="chart-box-header">
+<h3>Payroll Expenses</h3>
+<select id="overviewPayrollRange" class="chart-filter-select">
+  <option value="3">Last 3 Months</option>
+  <option value="6" selected>Last 6 Months</option>
+  <option value="12">Last 12 Months</option>
+</select>
+</div>
+<canvas id="payrollChart"></canvas>
+</div>
+
+<div class="chart-box">
+<div class="chart-box-header">
+<h3>Workforce Distribution</h3>
+<select id="overviewWorkforceFilter" class="chart-filter-select">
+  <option value="department">By Department</option>
+  <option value="employmentType">By Payment Type</option>
+  <option value="status">By Status</option>
+</select>
+</div>
+<canvas id="workforceChart"></canvas>
+</div>
+
+</section>
+
+<!-- PANELS -->
+
+  <section class="bottom">
+
+ <div class="panel dashboard-panel activity-panel">
+
+  <h3>Recent Activities</h3>
+
+  <ul class="dashboard-list" id="recentActivitiesList">
+  <li>Loading current activity...</li>
+  </ul>
+
+  </div>
+
+ <div class="panel dashboard-panel actions-panel">
+
+ <h3>Upcoming Actions</h3>
+
+  <ul class="dashboard-list" id="upcomingActionsList">
+  <li>Loading current actions...</li>
+  </ul>
+
+  </div>
+
+ <div class="panel dashboard-panel summary-panel">
+
+ <h3>Today's Summary</h3>
+
+  <div class="summary-metrics" id="overviewSummaryMetrics">
+    <p><span>Present</span><strong>0</strong></p>
+    <p><span>Absent</span><strong>0</strong></p>
+    <p><span>On Leave</span><strong>0</strong></p>
+    <p><span>Late</span><strong>0</strong></p>
+  </div>
+
+  </div>
+
+</section>
+
+</div>
+
+<div id="workforce" class="section">
+
+<!-- Tabs -->
+<div class="tabs">
+  <button class="tab active" type="button" data-workforce-tab-target="employees">Employees</button>
+  <button class="tab" type="button" data-workforce-tab-target="departments">Departments</button>
+  <button class="tab" type="button" data-workforce-tab-target="contracts">Contracts</button>
+</div>
+
+<!-- Tab Content -->
+
+ <!-- Employees-->
+
+<div id="employees" class="tab-content active-tab">
+
+    <div class="employees-layout">
+    
+    <!-- LEFT SIDE (TABLE) -->
+    
+    <div class="employee-table-area">
+    
+      <table class="employee-table">
+
+        <thead>
+        <tr>
+        <th>Name</th>
+        <th>Department</th>
+        <th>Payment Type</th>
+        <th>Employment Date</th>
+        <th>Status</th>
+        </tr>
+        </thead>
+        
+        <tbody id="employeeTable"></tbody>
+        
+        </table>
+        
+        <div class="pagination">
+        <button onclick="prevPage()">Prev</button>
+        <span id="pageNumber">1</span>
+        <button onclick="nextPage()">Next</button>
+        </div>
+        
+    
+    </div>
+    
+    <!-- RIGHT SIDE (CONTROLS) -->
+    
+    <div class="employee-controls">
+    
+    <h3>Total Active Employees</h3> <h2 id="activeCount">2</h2>
+   
+    
+    <button id="addEmployeeBtn" class="btn-primary" type="button">Add Employee</button>
+    
+    <button id="editEmployee" class="btn-disabled" disabled>Edit Employee</button>
+    
+    <input id="employeeSearchInput" type="text" placeholder="Search employee..." class="filter-input">
+      
+      <select id="employeeDepartmentFilter" class="filter-input">
+      <option value="">Department</option>
+      </select>
+      
+      <select id="employeeEmploymentTypeFilter" class="filter-input">
+      <option value="">Payment Type</option>
+      <option>Weekly</option>
+      <option>Monthly</option>
+      <option>Daily</option>
+      </select>
+      
+      <select id="employeeStatusFilter" class="filter-input">
+      <option value="">Status</option>
+      <option>ACTIVE</option>
+      <option>RETIRED</option>
+      <option>RESIGNED</option>
+      <option>FIRED</option>
+      <option>LEAVE</option>
+      </select>
+      
+      <select id="employeeSortFilter" class="filter-input">
+      <option value="">Sort By</option>
+      <option value="name">Name</option>
+      <option value="employmentDate">Date of Employment</option>
+      <option value="department">Department</option>
+      <option value="status">Status</option>
+      </select>
+    
+    <button id="employeeToolbarExportButton" class="btn-print" type="button">
+      <i class="fa-solid fa-download"></i> Export Employees
+      </button>
+    
+    </div>
+    
+    </div>
+    
+    </div>
+
+ <!-- Departments -->
+
+<div id="departments" class="tab-content">
+  <div class="departments-layout">
+    <div class="department-cards-area">
+      <div id="departmentCards" class="department-cards-grid"></div>
+    </div>
+
+    <aside class="department-sidebar">
+      <div class="department-sidebar-card">
+        <p class="department-sidebar-label">Number of Departments: <span id="departmentCount">0</span></p>
+        <button id="addDepartmentBtn" class="department-action-button" type="button">Add Department</button>
+        <button id="editDepartmentBtn" class="department-action-button secondary" type="button">Edit Department</button>
+        <input id="departmentSearch" class="department-search-input" type="text" placeholder="Search departments...">
+      </div>
+    </aside>
+  </div>
+</div>
+
+ <!-- Contracts -->
+<div id="contracts" class="tab-content">
+  <div class="contracts-layout">
+    <div class="contract-table-area">
+      <table class="employee-table contract-table">
+        <thead>
+          <tr>
+            <th>No</th>
+            <th>Contractee Name</th>
+            <th>Type of Contract</th>
+            <th>1st Date of Contract</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody id="contractTableBody"></tbody>
+      </table>
+    </div>
+
+    <aside class="contract-controls">
+      <button id="addContractBtn" class="department-action-button" type="button">Add Contract</button>
+      <button id="editContractBtn" class="department-action-button secondary" type="button">Edit Contact</button>
+      <button id="deleteContractBtn" class="department-action-button danger-action" type="button" disabled>Delete Contract</button>
+      <input id="contractSearchInput" class="department-search-input" type="text" placeholder="Search contracts...">
+
+      <div class="contract-filter-block">
+        <h4>Filters</h4>
+        <select id="contractTypeFilter" class="department-search-input">
+          <option value="">Type of Contract</option>
+          <option>Internship</option>
+          <option>Temporary</option>
+          <option>Freelance</option>
+          <option>Permanent</option>
+        </select>
+        <select id="contractStartFilter" class="department-search-input">
+          <option value="">1st Date of Contract</option>
+          <option>2026-01</option>
+          <option>2026-02</option>
+          <option>2026-03</option>
+        </select>
+        <select id="contractStatusFilter" class="department-search-input">
+          <option value="">Contract status</option>
+          <option>Active</option>
+          <option>Pending</option>
+          <option>Completed</option>
+          <option>Resigned</option>
+          <option>Terminated</option>
+        </select>
+        <select id="contractSortFilter" class="department-search-input">
+          <option value="">Sort by</option>
+          <option value="name">Name</option>
+          <option value="date">Date</option>
+          <option value="status">Status</option>
+        </select>
+      </div>
+
+      <button id="contractExportButton" class="btn-print" type="button">Export Contracts</button>
+    </aside>
+  </div>
+</div>
+
+</div>
+
+
+ <!-- Payroll-->
+
+<div id="payroll" class="section">
+  <div class="payroll-tabs">
+    <button class="payroll-tab active" type="button" data-payroll-tab-target="payrollRun">Payroll Run</button>
+    <button class="payroll-tab" type="button" data-payroll-tab-target="payrollHistory">Payroll History</button>
+    <button class="payroll-tab" type="button" data-payroll-tab-target="payrollStructure">Advance and Bonus</button>
+    <button class="payroll-tab" type="button" data-payroll-tab-target="payrollCalendar">Pay Calender</button>
+  </div>
+
+  <div id="payrollRun" class="payroll-tab-content active-payroll-tab">
+    <div class="payroll-toolbar">
+      <label>
+        Salary type
+        <select id="payrollSalaryType" class="department-search-input">
+          <option>Daily</option>
+          <option>Monthly</option>
+          <option>Weekly</option>
+        </select>
+      </label>
+
+      <label>
+        Due
+        <select id="payrollDueSelect" class="department-search-input">
+          <option value="2026-03">March 2026</option>
+          <option value="2026-04">April 2026</option>
+          <option value="2026-W13">Week 13, 2026</option>
+          <option value="2026-W14">Week 14, 2026</option>
+        </select>
+      </label>
+    </div>
+
+    <div class="payroll-layout">
+      <div id="payrollTablesArea" class="payroll-tables-area"></div>
+
+      <aside class="payroll-side-panel">
+        <label>
+          Department
+          <select id="payrollDepartmentFilter" class="department-search-input">
+            <option value="">All Departments</option>
+          </select>
+        </label>
+
+        <div id="payrollApprovals" class="payroll-approval-list"></div>
+
+        <button id="printPayrollPdfButton" class="btn-print payroll-print-button" type="button" disabled>Export Payroll</button>
+      </aside>
+    </div>
+  </div>
+
+  <div id="payrollHistory" class="payroll-tab-content">
+    <div class="settings-card payroll-history-panel">
+      <div class="section-head">
+        <div>
+          <h3>Payroll History</h3>
+          <p>Review previous payroll runs and track which employees have already been confirmed as paid.</p>
+        </div>
+      </div>
+      <div class="payroll-history-toolbar">
+        <div class="payroll-history-view-toggle">
+          <button type="button" class="approve-button payroll-history-view-button approved" data-payroll-history-view="daily">Daily</button>
+          <button type="button" class="approve-button payroll-history-view-button" data-payroll-history-view="weekly">Weekly</button>
+          <button type="button" class="approve-button payroll-history-view-button" data-payroll-history-view="monthly">Monthly</button>
+        </div>
+        <label class="payroll-history-select-label">
+          Past Payrolls
+          <select id="payrollHistorySelect" class="department-search-input">
+            <option value="">All past payrolls</option>
+          </select>
+        </label>
+      </div>
+      <div id="payrollHistoryArea" class="payroll-history-area"></div>
+    </div>
+  </div>
+
+  <div id="payrollStructure" class="payroll-tab-content">
+    <div class="payroll-structure-toolbar">
+      <label>
+        Salary type
+        <select id="structureSalaryType" class="department-search-input">
+          <option>Daily</option>
+          <option>Monthly</option>
+          <option>Weekly</option>
+        </select>
+      </label>
+
+      <label>
+        Department
+        <select id="structureDepartmentFilter" class="department-search-input">
+          <option value="">All Departments</option>
+        </select>
+      </label>
+    </div>
+
+    <div class="payroll-structure-layout">
+      <div class="payroll-structure-main">
+        <div class="payroll-structure-search">
+          <input id="structureEmployeeSearch" class="department-search-input" type="text" placeholder="Search employee name...">
+        </div>
+
+        <div class="payroll-structure-person">
+          <div class="employee-avatar-shell structure-avatar-shell">
+            <i class="fa-solid fa-circle-user"></i>
+          </div>
+
+          <div class="structure-person-fields">
+            <label>Name:<input id="structureEmployeeName" type="text" readonly></label>
+            <label>Identification:<input id="structureEmployeeId" type="text" readonly></label>
+            <label>Role:<input id="structureEmployeeRole" type="text" readonly></label>
+          </div>
+        </div>
+
+        <div class="payroll-structure-panels">
+          <section id="structureAdvancePanel" class="structure-panel">
+            <h4>Advance</h4>
+            <label>
+              Deduction type
+              <select id="structureDeductionType" class="department-search-input">
+                <option>Advance</option>
+                <option>Loan</option>
+              </select>
+            </label>
+            <label>
+              Amount
+              <input id="structureDeductionAmount" type="number" min="0" step="1000">
+            </label>
+            <div id="structureLoanDetails" class="structure-loan-fields is-hidden">
+              <label>
+                Installment amount
+                <input id="structureLoanInstallment" type="number" min="0" step="1000">
+              </label>
+              <label>
+                Total installments
+                <input id="structureLoanInstallments" type="number" min="0" step="1">
+              </label>
+              <label>
+                Installments paid
+                <input id="structureLoanPaidInstallments" type="number" min="0" step="1">
+              </label>
+              <label>
+                Next deduction date
+                <input id="structureLoanNextDate" type="date">
+              </label>
+            </div>
+            <button id="addDeductionButton" class="department-action-button" type="button">Add Deduction</button>
+          </section>
+
+          <section id="structureBonusPanel" class="structure-panel">
+            <h4>Bonuses</h4>
+            <label>
+              Allowance type
+              <select id="structureAllowanceType" class="department-search-input">
+                <option>Bonus</option>
+                <option>Allowance</option>
+              </select>
+            </label>
+            <label>
+              Amount
+              <input id="structureAllowanceAmount" type="number" min="0" step="1000">
+            </label>
+            <label><input id="structureAllowanceTaxable" type="checkbox" checked> Taxable income</label>
+            <button id="addAllowanceButton" class="department-action-button" type="button">Add Allowance</button>
+          </section>
+        </div>
+
+        <div class="structure-applied-list">
+          <h4>Applied Changes</h4>
+          <div id="structureChangesList" class="structure-change-items"></div>
+        </div>
+      </div>
+
+      <aside class="payroll-side-panel structure-side-panel">
+        <div id="structureApprovals" class="payroll-approval-list"></div>
+        <button id="printStructurePdfButton" class="btn-print payroll-print-button" type="button" disabled>Print PDF</button>
+      </aside>
+    </div>
+    </div>
+
+    <div id="payrollCalendar" class="payroll-tab-content">
+      <div class="payroll-toolbar payroll-calendar-toolbar">
+        <label>
+          Set Type
+          <select id="calendarSalaryType" class="department-search-input">
+            <option>Monthly</option>
+            <option>Weekly</option>
+          </select>
+        </label>
+      </div>
+
+      <div class="payroll-layout payroll-calendar-layout">
+        <div class="payroll-calendar-main">
+          <section class="payroll-calendar-board">
+            <div class="payroll-calendar-year-row">
+              <h3 id="calendarYearLabel">2026</h3>
+              <p id="payrollCalendarDue">March 2026 payroll run is currently pending approvals.</p>
+            </div>
+
+            <div id="paydayCalendarGrid" class="payday-calendar-grid"></div>
+          </section>
+
+          <div class="payroll-calendar-insights">
+            <article class="settings-card">
+              <h4>Next Payday</h4>
+              <p id="calendarNextPayday">No payday has been set yet.</p>
+            </article>
+            <article class="settings-card">
+              <h4>Reminder Window</h4>
+              <p id="calendarReminderStatus">Team reminders go out 3 days before payday.</p>
+            </article>
+            <article class="settings-card">
+              <h4>Cut-Off</h4>
+              <p id="calendarCutoffStatus">Attendance and adjustments close 2 days before payout.</p>
+            </article>
+          </div>
+        </div>
+
+        <aside class="payroll-side-panel payroll-calendar-side">
+          <label>
+            Set Payday
+            <select id="paydayDaySelect" class="department-search-input"></select>
+          </label>
+
+          <label>
+            Month
+            <select id="paydayMonthSelect" class="department-search-input"></select>
+          </label>
+
+          <button id="setPaydayButton" class="department-action-button" type="button">Set</button>
+
+          <div id="calendarApprovals" class="payroll-approval-list"></div>
+
+          <button id="sendPayrollReminderButton" class="btn-print payroll-print-button" type="button">Send Reminder</button>
+        </aside>
+      </div>
+    </div>
+  </div>
+
+
+
+   <!-- Worktrack -->
+<div id="worktrack" class="section">
+  <div class="worktrack-tabs">
+    <button class="worktrack-tab active" type="button" data-worktrack-tab-target="attendanceTab">Attendance</button>
+    <button class="worktrack-tab" type="button" data-worktrack-tab-target="leaveTab">Leave Management</button>
+    <button class="worktrack-tab" type="button" data-worktrack-tab-target="overtimeTab">Overtime</button>
+    <button class="worktrack-tab" type="button" data-worktrack-tab-target="holidaysTab">Holidays</button>
+  </div>
+
+  <div id="attendanceTab" class="worktrack-tab-content active-worktrack-tab">
+    <div class="worktrack-attendance-cards">
+      <article class="settings-card">
+        <h4>Attendance View</h4>
+        <label>View Mode
+          <select id="attendanceViewMode" class="department-search-input">
+            <option value="daily">Daily</option>
+            <option value="weekly">Weekly</option>
+            <option value="monthly">Monthly</option>
+          </select>
+        </label>
+      </article>
+      <article class="settings-card">
+        <h4>Date Filters</h4>
+        <div class="attendance-filter-grid">
+          <label>Filter Type
+            <select id="attendanceDateFilterMode" class="department-search-input">
+              <option value="current_period">Current Period</option>
+              <option value="custom_range">Custom Date Range</option>
+              <option value="specific_date">Specific Date</option>
+            </select>
+          </label>
+          <label id="attendanceDateFieldLabel">Date<input id="attendanceDateInput" class="department-search-input" type="date"></label>
+          <label id="attendanceFromFieldLabel">From<input id="attendanceFromInput" class="department-search-input" type="date"></label>
+          <label id="attendanceToFieldLabel">To<input id="attendanceToInput" class="department-search-input" type="date"></label>
+          <label id="attendanceMonthFieldLabel">Month<input id="attendanceMonthInput" class="department-search-input" type="month"></label>
+        </div>
+      </article>
+      <article class="settings-card">
+        <h4>Department View</h4>
+        <label>Department
+          <select id="attendanceDepartmentFilter" class="department-search-input">
+            <option value="">All Departments</option>
+          </select>
+        </label>
+        <button id="attendanceExportButton" class="department-action-button" type="button">Export Attendance</button>
+      </article>
+    </div>
+
+    <div class="worktrack-layout">
+      <div class="worktrack-main-panel">
+        <table class="employee-table worktrack-table">
+          <thead>
+            <tr>
+              <th>No</th>
+              <th>Employee</th>
+              <th>Department</th>
+              <th>Role</th>
+              <th>Days Attended</th>
+              <th>Daily Rate</th>
+              <th>Calculated Salary</th>
+            </tr>
+          </thead>
+          <tbody id="attendanceTableBody"></tbody>
+        </table>
+
+        <div class="worktrack-attendance-summary-row">
+          <article class="settings-card">
+            <h4>Attendance Summary</h4>
+            <p id="attendanceSummaryText">Attendance totals will appear here.</p>
+          </article>
+          <article class="settings-card">
+            <h4>Tracked Period</h4>
+            <p id="attendanceTrackedPeriod">March 2026 is the current attendance cycle.</p>
+          </article>
+          <article class="settings-card">
+            <h4>Selected Entry</h4>
+            <p id="attendanceEntrySummary">Choose or create a daily check-in to review approvals.</p>
+          </article>
+        </div>
+
+        <section class="worktrack-table-card">
+          <h3>Attendance Entries</h3>
+          <table class="employee-table worktrack-table">
+            <thead>
+              <tr>
+                <th>No</th>
+                <th>Employee</th>
+                <th>Department</th>
+                <th>Date</th>
+                <th>Check In</th>
+                <th>Check Out</th>
+                <th>Hours</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="attendanceEntriesTableBody"></tbody>
+          </table>
+        </section>
+      </div>
+
+      <aside class="worktrack-side-panel">
+        <article class="settings-card">
+          <h4>Daily Check-In</h4>
+          <label>Employee Search<input id="attendanceEmployeeSearch" class="department-search-input" type="text" placeholder="Search employee"></label>
+          <label>Employee
+            <select id="attendanceEmployeeSelect" class="department-search-input"></select>
+          </label>
+          <label>Date<input id="attendanceEntryDate" class="department-search-input" type="date"></label>
+          <label>Check In<input id="attendanceCheckIn" class="department-search-input" type="time"></label>
+          <label>Check Out<input id="attendanceCheckOut" class="department-search-input" type="time"></label>
+          <button id="saveAttendanceEntryButton" class="department-action-button" type="button">Save Manual Check-In</button>
+        </article>
+        <article class="settings-card accent-card">
+          <h4>Check-In Mode</h4>
+          <p id="attendanceModeNote">Manual logs are saved after approval. HexaScan biometric sync is coming soon.</p>
+        </article>
+        <div id="attendanceApprovalList" class="payroll-approval-list"></div>
+        <button id="attendanceRefreshButton" class="department-action-button" type="button">Refresh Attendance</button>
+      </aside>
+    </div>
+  </div>
+
+  <div id="leaveTab" class="worktrack-tab-content">
+    <div class="worktrack-leave-cards">
+      <article class="settings-card">
+        <h4>Active Leave</h4>
+        <p id="activeLeaveCount">0 employees currently on approved leave.</p>
+      </article>
+      <article class="settings-card">
+        <h4>Pending Leave</h4>
+        <p id="pendingLeaveCount">0 leave requests are waiting for action.</p>
+      </article>
+      <article class="settings-card">
+        <h4>Return Due</h4>
+        <p id="leaveReturnDue">No one is due back soon.</p>
+      </article>
+    </div>
+
+      <div class="worktrack-layout">
+        <div class="worktrack-main-panel worktrack-leave-panel">
+          <section class="worktrack-table-card">
+            <h3>Add Leave Request</h3>
+            <div class="worktrack-form-grid">
+              <label>Employee
+                <select id="leaveEmployeeSelect" class="department-search-input"></select>
+              </label>
+                <label>Leave Type
+                 <select id="leaveTypeInput" class="department-search-input">
+                    <option value="annual">Annual Leave</option>
+                    <option value="sick">Sick Leave</option>
+                    <option value="maternity">Maternity Leave</option>
+                    <option value="paternity">Paternity Leave</option>
+                    <option value="compassionate">Compassionate Leave</option>
+                  </select>
+                </label>
+              <label>From<input id="leaveFromInput" class="department-search-input" type="date"></label>
+              <label>To<input id="leaveToInput" class="department-search-input" type="date"></label>
+            </div>
+            <button id="addLeaveRequestButton" class="department-action-button" type="button">Add Leave Request</button>
+          </section>
+
+          <section class="worktrack-table-card">
+            <h3>Active Leave</h3>
+            <table class="employee-table worktrack-table">
+            <thead>
+                <tr>
+                  <th>Employee</th>
+                  <th>Type</th>
+                  <th>Department</th>
+                  <th>From</th>
+                  <th>To</th>
+                  <th>Action</th>
+                </tr>
+            </thead>
+            <tbody id="activeLeaveTableBody"></tbody>
+          </table>
+        </section>
+
+        <section class="worktrack-table-card">
+          <h3>Pending Leave</h3>
+          <table class="employee-table worktrack-table">
+            <thead>
+              <tr>
+                <th>Employee</th>
+                <th>Type</th>
+                <th>Department</th>
+                <th>Requested</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="pendingLeaveTableBody"></tbody>
+          </table>
+        </section>
+      </div>
+
+      <aside class="worktrack-side-panel">
+        <article class="settings-card">
+          <h4>Selected Request</h4>
+          <p id="selectedLeaveSummary">Pick a pending leave request to review approvals.</p>
+        </article>
+        <div id="leaveApprovalList" class="payroll-approval-list"></div>
+        <button id="rejectLeaveButton" class="department-action-button danger-action" type="button">Reject Request</button>
+      </aside>
+    </div>
+  </div>
+
+  <div id="overtimeTab" class="worktrack-tab-content">
+    <div class="worktrack-layout">
+      <div class="worktrack-main-panel">
+        <table class="employee-table worktrack-table">
+          <thead>
+            <tr>
+              <th>Department</th>
+              <th>Role</th>
+              <th>Hourly Rate</th>
+              <th>Updated</th>
+            </tr>
+          </thead>
+          <tbody id="overtimeRatesBody"></tbody>
+        </table>
+      </div>
+
+        <aside class="worktrack-side-panel">
+          <label>
+            Department
+            <select id="overtimeDepartmentInput" class="department-search-input"></select>
+          </label>
+          <label>
+            Role
+            <select id="overtimeRoleInput" class="department-search-input"></select>
+          </label>
+          <label>
+            Hourly Rate
+            <input id="overtimeRateInput" class="department-search-input" type="number" min="0" step="100">
+        </label>
+        <button id="saveOvertimeRateButton" class="department-action-button" type="button">Save Rate</button>
+        <button id="deleteOvertimeRateButton" class="department-action-button danger-action" type="button" disabled>Delete Rate</button>
+        <article class="settings-card">
+          <h4>Overtime Guidance</h4>
+          <p id="overtimeHint">Use department-role rates so approvals and payroll edits stay consistent.</p>
+        </article>
+      </aside>
+    </div>
+  </div>
+
+  <div id="holidaysTab" class="worktrack-tab-content">
+    <div class="worktrack-holidays-grid">
+      <section class="worktrack-table-card">
+        <h3>Company Holidays</h3>
+        <table class="employee-table worktrack-table">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Date</th>
+            </tr>
+          </thead>
+          <tbody id="companyHolidayBody"></tbody>
+        </table>
+      </section>
+
+      <section class="worktrack-table-card">
+        <h3>National Holidays</h3>
+        <table class="employee-table worktrack-table">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Date</th>
+            </tr>
+          </thead>
+          <tbody id="nationalHolidayBody"></tbody>
+        </table>
+      </section>
+    </div>
+
+    <div class="worktrack-layout">
+      <div class="worktrack-main-panel worktrack-holiday-actions">
+        <article class="settings-card">
+          <h4>Add Company Holiday</h4>
+          <label>Name<input id="companyHolidayNameInput" class="department-search-input" type="text" placeholder="Holiday name"></label>
+          <label>Date<input id="companyHolidayDateInput" class="department-search-input" type="date"></label>
+          <button id="addCompanyHolidayButton" class="department-action-button" type="button">Add Company Holiday</button>
+          <button id="deleteCompanyHolidayButton" class="department-action-button danger-action" type="button" disabled>Delete Company Holiday</button>
+        </article>
+
+        <article class="settings-card">
+          <h4>Add National Holiday</h4>
+          <label>Name<input id="nationalHolidayNameInput" class="department-search-input" type="text" placeholder="Holiday name"></label>
+          <label>Date<input id="nationalHolidayDateInput" class="department-search-input" type="date"></label>
+          <button id="addNationalHolidayButton" class="department-action-button" type="button">Add National Holiday</button>
+          <button id="deleteNationalHolidayButton" class="department-action-button danger-action" type="button" disabled>Delete National Holiday</button>
+        </article>
+      </div>
+
+      <aside class="worktrack-side-panel">
+        <article class="settings-card">
+          <h4>Holiday Notes</h4>
+          <p id="holidaySummaryText">Company holidays help payroll skip non-working dates and improve planning accuracy.</p>
+        </article>
+      </aside>
+    </div>
+  </div>
+ </div>
+
+
+
+
+   <!-- Financials -->
+  <div id="financials" class="section">
+    <div class="financials-tabs">
+      <button class="financials-tab active" type="button" data-financials-tab-target="financialRulesTab">Deductions</button>
+      <button class="financials-tab" type="button" data-financials-tab-target="financialIncentivesTab">Incentives</button>
+      <button class="financials-tab" type="button" data-financials-tab-target="financialReportsTab">Tax Reports</button>
+      <button class="financials-tab" type="button" data-financials-tab-target="financialLedgerTab">Payroll Ledger</button>
+    </div>
+
+    <div id="financialRulesTab" class="financials-tab-content active-financials-tab">
+      <div class="financials-layout">
+        <section class="financials-main-panel">
+          <div class="financials-metrics-grid">
+            <article class="settings-card">
+              <h4>PAYE</h4>
+              <div id="financialPayeBandsList" class="card-caption"></div>
+              <p id="financialPayeReliefAmount" class="card-caption"></p>
+            </article>
+            <article class="settings-card">
+              <h4>SHIF</h4>
+              <p id="financialShifRule" class="card-caption"></p>
+            </article>
+            <article class="settings-card">
+              <h4>NSSF</h4>
+              <p id="financialNssfRule" class="card-caption"></p>
+            </article>
+            <article class="settings-card">
+              <h4>Housing Levy</h4>
+              <p id="financialHousingLevyRule" class="card-caption"></p>
+            </article>
+          </div>
+
+          <article class="worktrack-table-card">
+            <h3>PAYE Calculator</h3>
+            <label>Gross Salary
+              <input id="payeCalculatorGrossSalary" class="department-search-input" type="number" min="0" step="0.01" placeholder="Enter gross salary">
+            </label>
+            <button id="calculatePayeButton" class="department-action-button" type="button">Calculate</button>
+            <p id="payeCalculatorMessage" class="card-caption"></p>
+            <div id="payeCalculatorResults" class="structure-change-items"></div>
+          </article>
+
+          <article class="worktrack-table-card">
+            <h3>Custom Deductions</h3>
+            <div id="customDeductionList" class="structure-change-items"></div>
+          </article>
+        </section>
+
+        <aside class="financials-side-panel">
+          <article class="settings-card">
+            <h4>Add Custom Deduction</h4>
+            <label>Name
+              <input id="customDeductionName" class="department-search-input" type="text" placeholder="Deduction name">
+            </label>
+            <label>Type
+              <select id="customDeductionType" class="department-search-input">
+                <option value="percentage">Percentage</option>
+                <option value="flat">Flat Amount</option>
+              </select>
+            </label>
+            <label>Value
+              <input id="customDeductionValue" class="department-search-input" type="number" min="0" step="0.1">
+            </label>
+            <button id="addCustomDeductionButton" class="department-action-button" type="button">Add Deduction</button>
+          </article>
+          <article class="settings-card">
+            <h4>Deduction Summary</h4>
+            <p id="financialRulesSummary">Deduction summary will appear here.</p>
+          </article>
+          <article class="settings-card">
+            <h4>Individual Statutory Rules</h4>
+            <label>Search Employee
+              <input id="financialEmployeeSearch" class="department-search-input" type="text" placeholder="Search employee">
+            </label>
+            <label>Employee
+              <select id="financialEmployeeSelect" class="department-search-input"></select>
+            </label>
+            <div class="employee-tax-toggle-row">
+              <button id="financialEmployeeApplyTaxButton" class="tax-financial-toggle" type="button">Apply Tax Financials</button>
+            </div>
+            <div id="financialEmployeeTaxOptions" class="employee-tax-options is-hidden">
+              <label><input id="financialEmployeeApplyPaye" type="checkbox" checked> PAYE</label>
+              <label><input id="financialEmployeeApplyShif" type="checkbox" checked> SHIF</label>
+              <label><input id="financialEmployeeApplyNssf" type="checkbox" checked> NSSF</label>
+              <label><input id="financialEmployeeApplyHousingLevy" type="checkbox" checked> Housing Levy</label>
+            </div>
+            <button id="saveFinancialEmployeeRulesButton" class="department-action-button" type="button">Save Employee Rules</button>
+            <p id="financialEmployeeRuleSummary" class="card-caption">Search and select an employee to manage individual statutory deductions.</p>
+          </article>
+        </aside>
+      </div>
+    </div>
+
+    <div id="financialIncentivesTab" class="financials-tab-content">
+      <div class="financials-layout">
+        <section class="financials-main-panel">
+          <article class="worktrack-table-card">
+            <h3>Bonuses and Incentives</h3>
+            <table class="employee-table worktrack-table">
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Type</th>
+                  <th>Scope</th>
+                  <th>Target</th>
+                  <th>Amount</th>
+                </tr>
+              </thead>
+              <tbody id="financialIncentivesBody"></tbody>
+            </table>
+          </article>
+        </section>
+
+        <aside class="financials-side-panel">
+          <article class="settings-card">
+            <h4>Add Incentive</h4>
+            <label>Name
+              <input id="financialIncentiveName" class="department-search-input" type="text" placeholder="Bonus or incentive">
+            </label>
+            <label>Type
+              <select id="financialIncentiveType" class="department-search-input">
+                <option>Bonus</option>
+                <option>Incentive</option>
+                <option>Retention</option>
+                <option>Commission</option>
+              </select>
+            </label>
+            <label>Scope
+              <select id="financialIncentiveScope" class="department-search-input">
+                <option value="company">Company</option>
+                <option value="department">Department</option>
+                <option value="individual">Individual</option>
+              </select>
+            </label>
+            <label>Target
+              <select id="financialIncentiveTarget" class="department-search-input"></select>
+            </label>
+            <label>Amount
+              <input id="financialIncentiveAmount" class="department-search-input" type="number" min="0" step="100">
+            </label>
+            <label><input id="financialIncentiveTaxable" type="checkbox" checked> Taxable income</label>
+            <button id="addFinancialIncentiveButton" class="department-action-button" type="button">Add Incentive</button>
+          </article>
+          <article class="settings-card">
+            <h4>Incentive Summary</h4>
+            <p id="financialIncentiveSummary">Incentive summary will appear here.</p>
+          </article>
+        </aside>
+      </div>
+    </div>
+
+    <div id="financialReportsTab" class="financials-tab-content">
+      <div class="financials-toolbar">
+        <label>
+          Department
+          <select id="financialReportDepartment" class="department-search-input">
+            <option value="">All Departments</option>
+          </select>
+        </label>
+      </div>
+
+      <div id="financialReportMetrics" class="financials-metrics-grid"></div>
+
+      <div class="financials-layout">
+        <section class="financials-main-panel">
+          <article class="worktrack-table-card">
+            <h3>Employee Tax Report</h3>
+            <table class="employee-table worktrack-table">
+              <thead>
+                <tr>
+                  <th>Employee</th>
+                  <th>Gross</th>
+                  <th>Taxable Pay</th>
+                  <th>PAYE</th>
+                  <th>SHIF</th>
+                  <th>NSSF</th>
+                  <th>Housing Levy</th>
+                  <th>Custom</th>
+                  <th>Net</th>
+                </tr>
+              </thead>
+              <tbody id="financialTaxReportBody"></tbody>
+            </table>
+          </article>
+        </section>
+
+        <aside class="financials-side-panel">
+          <article class="settings-card">
+            <h4>Tax Summary</h4>
+            <p id="financialTaxSummary">Tax report summary will appear here.</p>
+          </article>
+          <article class="settings-card">
+            <h4>Compliance Watch</h4>
+            <p id="financialComplianceText">Compliance signals will appear here.</p>
+          </article>
+        </aside>
+      </div>
+    </div>
+
+    <div id="financialLedgerTab" class="financials-tab-content">
+      <div id="financialLedgerMetrics" class="financials-metrics-grid"></div>
+
+      <div class="financials-layout">
+        <section class="financials-main-panel">
+          <article class="worktrack-table-card">
+            <h3>Payroll Ledger</h3>
+            <table class="employee-table worktrack-table">
+              <thead>
+                <tr>
+                  <th>Entry</th>
+                  <th>Value</th>
+                  <th>Notes</th>
+                </tr>
+              </thead>
+              <tbody id="financialLedgerBody"></tbody>
+            </table>
+          </article>
+        </section>
+
+        <aside class="financials-side-panel">
+          <article class="settings-card accent-card">
+            <h4>Finance Snapshot</h4>
+            <p id="financialLedgerNarrative">Ledger narrative will appear here.</p>
+          </article>
+        </aside>
+      </div>
+    </div>
+  </div>
+
+
+
+   <!-- Insights -->
+ <div id="insights" class="section">
+  <div class="insights-tabs">
+    <button class="insights-tab active" type="button" data-insights-tab-target="analyticsTab">Analytics</button>
+    <button class="insights-tab" type="button" data-insights-tab-target="aiInsightsTab">Insights</button>
+  </div>
+
+  <div id="analyticsTab" class="insights-tab-content active-insights-tab">
+    <div class="insights-toolbar">
+      <label>
+        Analytics Focus
+        <select id="insightsAnalyticsFilter" class="department-search-input">
+          <option value="all">All Signals</option>
+          <option value="workforce">Workforce</option>
+          <option value="contracts">Contracts</option>
+          <option value="attendance">Attendance</option>
+          <option value="leave">Leave</option>
+        </select>
+      </label>
+    </div>
+
+    <div id="insightsMetricsGrid" class="insights-metrics-grid"></div>
+
+    <div class="insights-layout">
+      <section class="insights-main-panel">
+        <article class="worktrack-table-card">
+          <h3>Department Analytics</h3>
+          <table class="employee-table worktrack-table insights-table">
+            <thead>
+              <tr>
+                <th>Department</th>
+                <th>Employees</th>
+                <th>Active</th>
+                <th>On Leave</th>
+                <th>Contracts</th>
+              </tr>
+            </thead>
+            <tbody id="insightsDepartmentTableBody"></tbody>
+          </table>
+        </article>
+      </section>
+
+      <aside class="insights-side-panel">
+        <article class="settings-card">
+          <h4>Risk Watch</h4>
+          <p id="insightsRiskWatch">Risk summary will appear here.</p>
+        </article>
+        <article class="settings-card">
+          <h4>Operational Readiness</h4>
+          <p id="insightsReadinessText">Operational readiness summary will appear here.</p>
+        </article>
+      </aside>
+    </div>
+  </div>
+
+  <div id="aiInsightsTab" class="insights-tab-content">
+    <div class="insights-toolbar">
+      <label>
+        Decision Focus
+        <select id="insightsDecisionFocus" class="department-search-input">
+          <option value="all">Overall Strategy</option>
+          <option value="employees">Employees</option>
+          <option value="contracts">Contracts</option>
+          <option value="attendance">Attendance</option>
+        </select>
+      </label>
+    </div>
+
+    <div class="insights-layout">
+      <section class="insights-main-panel">
+        <div id="aiInsightsCards" class="ai-insights-grid"></div>
+      </section>
+
+      <aside class="insights-side-panel">
+        <article class="settings-card accent-card">
+          <h4>HexaMind</h4>
+          <p id="aiInsightsSummary">AI advisory summary will appear here.</p>
+        </article>
+        <article class="settings-card">
+          <h4>Recommended Next Step</h4>
+          <p id="aiRecommendedAction">Recommended action will appear here.</p>
+        </article>
+      </aside>
+    </div>
+  </div>
+ </div>
+
+
+</div>
+
+</div>
+
+<div id="settingsWindow" class="settings-window" aria-hidden="true">
+  <div class="settings-panel" role="dialog" aria-modal="true" aria-labelledby="settingsTitle">
+    <div class="settings-panel-header">
+      <div>
+        <p class="settings-eyebrow">Workspace Controls</p>
+        <h2 id="settingsTitle">Settings</h2>
+      </div>
+      <button id="settingsClose" class="settings-close" type="button" aria-label="Close settings">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+
+    <div class="settings-sections">
+      <section class="settings-section">
+        <div class="section-heading">
+          <span class="settings-card-icon"><i class="fa-solid fa-building"></i></span>
+          <div>
+            <h3>Company</h3>
+            <p>Manage the current company profile, payroll currency, and team access.</p>
+          </div>
+        </div>
+
+        <div class="settings-card-grid company-grid">
+          <article class="settings-card accent-card">
+            <h4>Edit Company</h4>
+            <div class="settings-form">
+              <label>
+                Company name
+                <input id="companyEditName" type="text" value="Company A">
+              </label>
+              <label>
+                Industry
+                <input id="companyIndustry" type="text" value="Technology Services">
+              </label>
+              <label>
+                Payroll email
+                <input id="companyEmail" type="email" value="payroll@companya.com">
+              </label>
+              <div class="settings-file-field">
+                <span>Company logo</span>
+                <label class="employee-avatar-upload company-logo-upload" for="companyLogoInput">
+                  <div id="companyLogoPreview" class="employee-avatar-shell image-avatar-shell" data-fallback-icon="fa-solid fa-building">
+                    <i class="fa-solid fa-building"></i>
+                  </div>
+                  <span>Select company logo</span>
+                </label>
+                <input id="companyLogoInput" type="file" accept="image/*" hidden>
+              </div>
+              <button id="saveCompanyProfile" type="button">Save Company</button>
+              <button id="companyLogoutButton" type="button">Company Logout</button>
+            </div>
+          </article>
+
+          <article class="settings-card">
+            <h4>Currency Settings</h4>
+            <div class="settings-form">
+              <label>
+                Default currency
+                <select id="currencySelect">
+                  <option value="KES">KES - Kenyan Shilling</option>
+                  <option value="USD">USD - US Dollar</option>
+                  <option value="EUR">EUR - Euro</option>
+                  <option value="GBP">GBP - British Pound</option>
+                </select>
+              </label>
+              <button id="applyCurrencyButton" type="button">Apply Currency</button>
+              <div class="settings-note" id="currencyPreview">Payroll totals will display in KSh.</div>
+            </div>
+          </article>
+
+          <article class="settings-card members-card">
+            <h4>Company Users</h4>
+            <p class="card-caption">All users under this company appear here. Promote them as needed.</p>
+            <div id="memberList" class="member-list"></div>
+            <p class="card-caption">New users are created from the Company Access panel after the company signs in.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="settings-section">
+        <div class="section-heading">
+          <span class="settings-card-icon"><i class="fa-solid fa-palette"></i></span>
+          <div>
+            <h3>Appearances</h3>
+            <p>Choose a theme mode and adjust scale for comfortable reading.</p>
+          </div>
+        </div>
+
+        <div class="settings-card-grid appearance-grid">
+          <article class="settings-card">
+            <h4>Themes</h4>
+            <div class="theme-options">
+              <button class="theme-option" data-theme-option="light" type="button">Light</button>
+              <button class="theme-option" data-theme-option="dark" type="button">Dark</button>
+              <button class="theme-option" data-theme-option="system" type="button">System</button>
+            </div>
+          </article>
+
+          <article class="settings-card">
+            <h4>Font Scaling</h4>
+            <div class="settings-form">
+              <label for="fontScaleRange">Interface size</label>
+              <input id="fontScaleRange" type="range" min="90" max="120" step="5" value="100">
+              <div class="settings-note"><span id="fontScaleValue">100%</span> scale across the dashboard.</div>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="settings-section">
+        <div class="section-heading">
+          <span class="settings-card-icon"><i class="fa-solid fa-database"></i></span>
+          <div>
+            <h3>Data and System</h3>
+            <p>Protect your records, export people data, and keep a visible history of actions.</p>
+          </div>
+        </div>
+
+        <div class="settings-card-grid system-grid">
+          <article class="settings-card">
+            <h4>Backup Data</h4>
+            <p>Create a local JSON snapshot of the current company data, or restore a downloaded backup. HexaPay creates a rollback snapshot automatically before each restore.</p>
+            <div class="settings-card-actions">
+              <button id="backupDataButton" type="button">Backup Data</button>
+              <button id="restoreBackupButton" type="button">Restore Backup</button>
+            </div>
+            <input id="restoreBackupInput" type="file" accept=".hexa,.json,application/json" hidden>
+          </article>
+
+          <article class="settings-card">
+            <h4>Export Employee Data</h4>
+            <p>Download the current workforce table as CSV for payroll or reporting workflows.</p>
+            <button id="exportEmployeeDataButton" type="button">Export Employees</button>
+          </article>
+
+          <article class="settings-card activity-card">
+            <h4>Activity History</h4>
+            <div id="activityHistoryList" class="activity-history-list"></div>
+          </article>
+        </div>
+      </section>
+    </div>
+  </div>
+</div>
+
+<div id="notificationsWindow" class="settings-window notifications-window" aria-hidden="true">
+  <div class="settings-panel notifications-panel" role="dialog" aria-modal="true" aria-labelledby="notificationsTitle">
+    <div class="settings-panel-header">
+      <div>
+        <p class="settings-eyebrow">Alerts & Updates</p>
+        <h2 id="notificationsTitle">Notifications</h2>
+      </div>
+      <button id="notificationsClose" class="settings-close notifications-close" type="button" aria-label="Close notifications">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+
+    <div class="notification-stack">
+      <article class="notification-card priority-card">
+        <div class="notification-badge"><i class="fa-solid fa-wallet"></i></div>
+        <div class="notification-copy">
+          <div class="notification-meta">
+            <h3>Payroll approval required</h3>
+            <span>2 min ago</span>
+          </div>
+          <p>March payroll batch for Company A is ready for final review and release.</p>
+        </div>
+      </article>
+
+      <article class="notification-card">
+        <div class="notification-badge"><i class="fa-solid fa-user-plus"></i></div>
+        <div class="notification-copy">
+          <div class="notification-meta">
+            <h3>New employee onboarded</h3>
+            <span>18 min ago</span>
+          </div>
+          <p>Grace Wanjiru was added to Engineering and is waiting for access setup.</p>
+        </div>
+      </article>
+
+      <article class="notification-card">
+        <div class="notification-badge"><i class="fa-solid fa-calendar-check"></i></div>
+        <div class="notification-copy">
+          <div class="notification-meta">
+            <h3>Leave request updated</h3>
+            <span>1 hr ago</span>
+          </div>
+          <p>Sarah Kim’s leave request has been approved and synced to workforce tracking.</p>
+        </div>
+      </article>
+
+      <article class="notification-card">
+        <div class="notification-badge"><i class="fa-solid fa-triangle-exclamation"></i></div>
+        <div class="notification-copy">
+          <div class="notification-meta">
+            <h3>Attendance anomaly</h3>
+            <span>Today</span>
+          </div>
+          <p>Three clock-ins were flagged for review because their shift start times were missed.</p>
+        </div>
+      </article>
+    </div>
+  </div>
+</div>
+
+<div id="notificationToastHost" class="notification-toast-host" aria-live="polite" aria-atomic="true"></div>
+
+<div id="profileWindow" class="settings-window profile-window" aria-hidden="true">
+  <div class="settings-panel profile-panel" role="dialog" aria-modal="true" aria-labelledby="profileTitle">
+    <div class="settings-panel-header">
+      <div>
+        <p class="settings-eyebrow">Company Access</p>
+        <h2 id="profileTitle">Profile</h2>
+      </div>
+      <button id="profileClose" class="settings-close" type="button" aria-label="Close profile">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+
+    <section class="profile-hero">
+      <img id="profileHeroImage" class="profile-hero-image" src="Assets/Logo.png" alt="Company logo">
+      <div>
+        <h3 id="profileHeroName">Company A</h3>
+        <p id="profileHeroRole">Sign in to manage the company profile and add the current user.</p>
+      </div>
+    </section>
+
+    <div class="profile-card-grid">
+      <article class="settings-card accent-card">
+        <h4>Log In</h4>
+        <div class="settings-form">
+          <label>
+            Company email
+            <input id="profileLoginEmail" type="email" placeholder="company@example.com">
+          </label>
+          <label>
+            Password
+            <div class="password-input-shell">
+              <input id="profileLoginPassword" type="password" placeholder="Enter your password">
+              <button class="password-visibility-toggle" type="button" data-password-toggle-target="profileLoginPassword" aria-label="Show password" aria-pressed="false">
+                <i class="fa-solid fa-eye"></i>
+              </button>
+            </div>
+          </label>
+          <button id="profileLoginButton" type="button">Log In</button>
+        </div>
+      </article>
+
+      <article class="settings-card">
+        <h4>Sign Up</h4>
+        <div class="settings-form">
+          <label>
+            Company name
+            <input id="profileSignupCompany" type="text" placeholder="Company name">
+          </label>
+          <label>
+            Company email
+            <input id="profileSignupEmail" type="email" placeholder="company@example.com">
+          </label>
+          <div class="settings-file-field">
+            <span>Company logo</span>
+            <label class="employee-avatar-upload company-logo-upload" for="profileSignupLogo">
+              <div id="profileSignupLogoPreview" class="employee-avatar-shell image-avatar-shell" data-fallback-icon="fa-solid fa-building">
+                <i class="fa-solid fa-building"></i>
+              </div>
+              <span>Select company logo</span>
+            </label>
+            <input id="profileSignupLogo" type="file" accept="image/*" hidden>
+          </div>
+          <label>
+            Password
+            <div class="password-input-shell">
+              <input id="profileSignupPassword" type="password" placeholder="Not stored in frontend">
+              <button class="password-visibility-toggle" type="button" data-password-toggle-target="profileSignupPassword" aria-label="Show password" aria-pressed="false">
+                <i class="fa-solid fa-eye"></i>
+              </button>
+            </div>
+          </label>
+          <p class="card-caption">Use at least 8 characters with an uppercase letter, lowercase letter, number, and special character.</p>
+          <button id="profileSignupButton" type="button">Sign Up</button>
+        </div>
+      </article>
+
+      <article id="userProfileCard" class="settings-card profile-user-card">
+        <h4>Company User Access</h4>
+        <p class="card-caption">After company login, create users here. The first user is admin and new users default to viewer.</p>
+        <p id="profileAuthStatus" class="card-caption">Signed out. Use the company email to sign in.</p>
+        <div class="settings-form">
+          <label>
+            Full name
+            <input id="profileUserSignupName" type="text" placeholder="User full name">
+          </label>
+          <label>
+            User email
+            <input id="profileUserSignupEmail" type="email" placeholder="user@example.com">
+          </label>
+          <label>
+            Create password
+            <div class="password-input-shell">
+              <input id="profileUserSignupPassword" type="password" placeholder="Create password">
+              <button class="password-visibility-toggle" type="button" data-password-toggle-target="profileUserSignupPassword" aria-label="Show password" aria-pressed="false">
+                <i class="fa-solid fa-eye"></i>
+              </button>
+            </div>
+          </label>
+          <label>
+            Repeat password
+            <div class="password-input-shell">
+              <input id="profileUserSignupPasswordRepeat" type="password" placeholder="Repeat password">
+              <button class="password-visibility-toggle" type="button" data-password-toggle-target="profileUserSignupPasswordRepeat" aria-label="Show password" aria-pressed="false">
+                <i class="fa-solid fa-eye"></i>
+              </button>
+            </div>
+          </label>
+          <button id="profileUserSignupButton" type="button">Sign Up User</button>
+        </div>
+        <div class="settings-form">
+          <label>
+            User email
+            <input id="profileUserLoginEmail" type="email" placeholder="user@example.com">
+          </label>
+          <label>
+            Password
+            <div class="password-input-shell">
+              <input id="profileUserLoginPassword" type="password" placeholder="Enter password">
+              <button class="password-visibility-toggle" type="button" data-password-toggle-target="profileUserLoginPassword" aria-label="Show password" aria-pressed="false">
+                <i class="fa-solid fa-eye"></i>
+              </button>
+            </div>
+          </label>
+          <button id="profileUserLoginButton" type="button">Log In User</button>
+        </div>
+      </article>
+    </div>
+  </div>
+</div>
+
+<div id="employeeModal" class="employee-modal-window" aria-hidden="true">
+  <div class="employee-modal-panel" role="dialog" aria-modal="true" aria-labelledby="employeeModalTitle">
+    <div class="employee-modal-header">
+      <button class="employee-back-button" type="button" onclick="closeModal()" aria-label="Close add employee">
+        <i class="fa-solid fa-circle-chevron-left"></i>
+      </button>
+      <h2 id="employeeModalTitle">Add Employee</h2>
+    </div>
+
+      <div class="employee-modal-body">
+        <div class="employee-avatar-column">
+        <label class="employee-avatar-upload" for="empProfileImage">
+          <div id="employeeAvatarPreview" class="employee-avatar-shell image-avatar-shell" data-fallback-icon="fa-solid fa-circle-user">
+            <i class="fa-solid fa-circle-user"></i>
+          </div>
+          <span>Add profile photo</span>
+        </label>
+        <input id="empProfileImage" type="file" accept="image/*" hidden>
+        </div>
+
+      <div class="employee-form-grid">
+        <label>Name:<input id="empName" type="text"></label>
+        <label>Identification:<input id="empIdentification" type="text"></label>
+        <label>Account Number:<input id="empAccountNumber" type="text"></label>
+        <label>Account Details:<input id="empAccountDetails" type="text"></label>
+          <label>
+            Department:
+            <select id="empDept">
+              <option value="">Select department</option>
+            </select>
+          </label>
+        <label>Role:<input id="empRole" type="text"></label>
+        <label>Employment Date:<input id="empDate" type="date"></label>
+        <label>
+          Payment Type:
+          <select id="empType">
+            <option>Weekly</option>
+            <option>Monthly</option>
+            <option>Daily</option>
+          </select>
+        </label>
+        <label id="empPaymentBasisRow" class="is-hidden">
+          Payment Structure:
+          <select id="empPaymentBasis">
+            <option value="standard">Standard</option>
+            <option value="attendance_dependent">Attendance Dependent</option>
+          </select>
+        </label>
+        <label>Salary:<input id="empSalary" type="number" min="0" step="1000"></label>
+        <label>
+          Status:
+          <select id="empStatus">
+            <option>ACTIVE</option>
+            <option>RESIGNED</option>
+            <option>FIRED</option>
+            <option>RETIRED</option>
+            <option>LEAVE</option>
+          </select>
+        </label>
+      </div>
+
+      <section class="employee-finance-editor">
+        <div class="employee-finance-header">
+          <h3>Salary Rules</h3>
+          <p>Apply statutory deductions only for employees who should actually be taxed, and capture any salary loan recovery details here.</p>
+        </div>
+
+        <div class="employee-tax-toggle-row">
+          <button id="empApplyTaxButton" class="tax-financial-toggle" type="button">Apply Tax Financials</button>
+        </div>
+
+        <div id="empTaxOptions" class="employee-tax-options is-hidden">
+          <label><input id="empApplyPaye" type="checkbox" checked> PAYE</label>
+          <label><input id="empApplyShif" type="checkbox" checked> SHIF</label>
+          <label><input id="empApplyNssf" type="checkbox" checked> NSSF</label>
+          <label><input id="empApplyHousingLevy" type="checkbox" checked> Housing Levy</label>
+        </div>
+
+        <label class="employee-loan-toggle">
+          <input id="empLoanEnabled" type="checkbox">
+          Apply salary loan deduction
+        </label>
+
+        <div id="empLoanFields" class="employee-loan-grid is-hidden">
+          <label>Loan name:<input id="empLoanName" type="text" placeholder="Staff advance / SACCO loan"></label>
+          <label>Principal:<input id="empLoanPrincipal" type="number" min="0" step="100"></label>
+          <label>Current balance:<input id="empLoanBalance" type="number" min="0" step="100"></label>
+          <label>Installment amount:<input id="empLoanInstallment" type="number" min="0" step="100"></label>
+          <label>
+            Frequency:
+            <select id="empLoanFrequency">
+              <option>Monthly</option>
+              <option>Weekly</option>
+            </select>
+          </label>
+          <label>Total installments:<input id="empLoanInstallments" type="number" min="0" step="1"></label>
+          <label>Installments paid:<input id="empLoanPaidInstallments" type="number" min="0" step="1"></label>
+          <label>Next deduction date:<input id="empLoanNextDate" type="date"></label>
+        </div>
+      </section>
+    </div>
+
+    <div class="employee-document-section">
+      <h3>Documentation</h3>
+      <label class="employee-document-dropzone" for="empDocuments">
+        <span class="employee-document-plus">+</span>
+        <span>Click + or drag to add document</span>
+      </label>
+      <input id="empDocuments" type="file" multiple hidden>
+      <div id="empDocumentsPreview" class="document-upload-preview"></div>
+    </div>
+
+    <div class="employee-modal-actions">
+      <button id="employeeSaveButton" class="employee-submit-button" type="button">Add</button>
+    </div>
+  </div>
+</div>
+
+<div id="employeeProfileWindow" class="employee-modal-window" aria-hidden="true">
+  <div class="employee-modal-panel profile-modal-panel" role="dialog" aria-modal="true" aria-labelledby="employeeProfileTitle">
+    <div class="employee-modal-header">
+      <button class="employee-back-button" type="button" onclick="closeProfileModal()" aria-label="Close employee profile">
+        <i class="fa-solid fa-circle-chevron-left"></i>
+      </button>
+      <h2 id="employeeProfileTitle">Employee Profile</h2>
+    </div>
+
+    <div class="employee-modal-body">
+      <div class="employee-avatar-column">
+        <div id="profileEmployeeAvatar" class="employee-avatar-shell image-avatar-shell" data-fallback-icon="fa-solid fa-circle-user">
+          <i class="fa-solid fa-circle-user"></i>
+        </div>
+        <label class="employee-avatar-upload" for="profileEmpProfileImage">
+          <span>Add profile photo</span>
+        </label>
+        <input id="profileEmpProfileImage" type="file" accept="image/*" hidden>
+      </div>
+
+      <div class="employee-form-grid">
+        <label>Name:<input id="profileEmpName" type="text"></label>
+        <label>Identification:<input id="profileEmpIdentification" type="text"></label>
+        <label>Account Number:<input id="profileEmpAccountNumber" type="text"></label>
+        <label>Account Details:<input id="profileEmpAccountDetails" type="text"></label>
+        <label>Department:
+          <select id="profileEmpDept">
+            <option value="">Select department</option>
+          </select>
+        </label>
+        <label>Role:<input id="profileEmpRole" type="text"></label>
+        <label>Employment Date:<input id="profileEmpDate" type="date"></label>
+        <label>Payment Type:
+          <select id="profileEmpType">
+            <option>Weekly</option>
+            <option>Monthly</option>
+            <option>Daily</option>
+          </select>
+        </label>
+        <label id="profileEmpPaymentBasisRow" class="is-hidden">
+          Payment Structure:
+          <select id="profileEmpPaymentBasis">
+            <option value="standard">Standard</option>
+            <option value="attendance_dependent">Attendance Dependent</option>
+          </select>
+        </label>
+        <label>Salary:<input id="profileEmpSalary" type="number" min="0" step="100"></label>
+        <label>Unpaid balance:<input id="profileEmpUnpaidBalance" type="text" readonly></label>
+        <label>Payroll number:<input id="profileEmpPayrollNumber" type="text" readonly></label>
+      </div>
+    </div>
+
+    <div class="employee-profile-lower">
+      <section class="profile-history-card">
+        <h3>Salary History</h3>
+        <table class="salary-history-table">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Gross</th>
+              <th>Deductions</th>
+              <th>Allowance</th>
+              <th>Net</th>
+            </tr>
+          </thead>
+          <tbody id="salaryHistoryBody"></tbody>
+        </table>
+        <button class="employee-submit-button small-button" type="button">Print PDF</button>
+      </section>
+
+      <section class="profile-documents-card">
+        <h3>Documents</h3>
+        <div id="profileDocumentsGrid" class="profile-documents-grid"></div>
+      </section>
+    </div>
+
+    <section class="employee-finance-card">
+      <div class="employee-finance-header">
+        <h3>Compensation Controls</h3>
+        <p id="employeeFinancialSummary">No tax or loan settings have been applied to this employee yet.</p>
+      </div>
+
+      <div class="employee-loan-grid employee-finance-edit-grid">
+        <label>Editable salary:<input id="profileSalaryEditor" type="number" min="0" step="100"></label>
+      </div>
+
+      <div class="employee-tax-toggle-row">
+        <button id="profileApplyTaxButton" class="tax-financial-toggle" type="button">Apply Tax Financials</button>
+      </div>
+
+      <div id="profileTaxOptions" class="employee-tax-options is-hidden">
+        <label><input id="profileApplyPaye" type="checkbox" checked> PAYE</label>
+        <label><input id="profileApplyShif" type="checkbox" checked> SHIF</label>
+        <label><input id="profileApplyNssf" type="checkbox" checked> NSSF</label>
+        <label><input id="profileApplyHousingLevy" type="checkbox" checked> Housing Levy</label>
+      </div>
+
+      <label class="employee-loan-toggle">
+        <input id="profileLoanEnabled" type="checkbox">
+        Apply salary loan deduction
+      </label>
+
+      <div id="profileLoanFields" class="employee-loan-grid is-hidden">
+        <label>Loan name:<input id="profileLoanName" type="text"></label>
+        <label>Principal:<input id="profileLoanPrincipal" type="number" min="0" step="100"></label>
+        <label>Current balance:<input id="profileLoanBalance" type="number" min="0" step="100"></label>
+        <label>Installment amount:<input id="profileLoanInstallment" type="number" min="0" step="100"></label>
+        <label>
+          Frequency:
+          <select id="profileLoanFrequency">
+            <option>Monthly</option>
+            <option>Weekly</option>
+          </select>
+        </label>
+        <label>Total installments:<input id="profileLoanInstallments" type="number" min="0" step="1"></label>
+        <label>Installments paid:<input id="profileLoanPaidInstallments" type="number" min="0" step="1"></label>
+        <label>Next deduction date:<input id="profileLoanNextDate" type="date"></label>
+      </div>
+
+      <div class="employee-modal-actions employee-finance-actions">
+        <button id="saveEmployeeFinancialButton" class="employee-submit-button small-button" type="button">Save Salary Rules</button>
+      </div>
+    </section>
+
+    <div class="profile-status-actions">
+      <button type="button" class="status-action status-retire" onclick="updateEmployeeStatus('RETIRED')">Retire</button>
+      <button type="button" class="status-action status-resigned" onclick="updateEmployeeStatus('RESIGNED')">Resigned</button>
+      <button type="button" class="status-action status-leave" onclick="updateEmployeeStatus('LEAVE')">Leave</button>
+      <button type="button" class="status-action status-fire" onclick="updateEmployeeStatus('FIRED')">Fire</button>
+    </div>
+
+    <div class="employee-modal-actions">
+      <button id="saveEmployeeProfileButton" class="employee-submit-button small-button" type="button">Save Employee Details</button>
+    </div>
+  </div>
+</div>
+
+<div id="departmentModal" class="employee-modal-window" aria-hidden="true">
+  <div class="employee-modal-panel department-modal-panel" role="dialog" aria-modal="true" aria-labelledby="departmentModalTitle">
+    <div class="employee-modal-header">
+      <button class="employee-back-button" type="button" onclick="closeDepartmentModal()" aria-label="Close department modal">
+        <i class="fa-solid fa-circle-chevron-left"></i>
+      </button>
+      <h2 id="departmentModalTitle">Add Department</h2>
+    </div>
+
+      <div class="employee-modal-body">
+        <div class="employee-avatar-column">
+        <div id="departmentAvatarPreview" class="employee-avatar-shell department-avatar-shell" data-fallback-icon="fa-solid fa-building">
+          <i class="fa-solid fa-building"></i>
+        </div>
+        </div>
+
+        <div class="department-form-grid">
+          <label>Name:<input id="departmentNameInput" type="text"></label>
+          <label>Notes:<input id="departmentNotesInput" type="text"></label>
+        </div>
+        <div class="department-icon-library">
+          <h3>Select Department Icon</h3>
+          <div id="departmentIconLibrary" class="department-icon-grid"></div>
+        </div>
+      </div>
+
+      <div class="employee-modal-actions">
+        <button id="departmentSaveButton" class="employee-submit-button" type="button">Add</button>
+        <button id="departmentDeleteButton" class="employee-submit-button department-delete-button" type="button">Delete</button>
+      </div>
+    </div>
+  </div>
+
+<div id="departmentProfileWindow" class="employee-modal-window" aria-hidden="true">
+  <div class="employee-modal-panel department-profile-panel" role="dialog" aria-modal="true" aria-labelledby="departmentProfileTitle">
+    <div class="employee-modal-header">
+      <button class="employee-back-button" type="button" onclick="closeDepartmentProfile()" aria-label="Close department profile">
+        <i class="fa-solid fa-circle-chevron-left"></i>
+      </button>
+      <h2 id="departmentProfileTitle">Department</h2>
+    </div>
+
+    <div class="department-profile-content">
+      <div class="department-profile-main">
+        <h3 id="departmentProfileName" class="department-profile-name">ENGINEERING</h3>
+
+        <table class="salary-history-table department-members-table">
+          <thead>
+            <tr>
+              <th>No</th>
+              <th>Employee Name</th>
+              <th>Role</th>
+              <th>Date of Employment</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="departmentMembersBody"></tbody>
+        </table>
+
+        <div class="department-profile-footer">
+          <button id="printDepartmentButton" class="employee-submit-button small-button" type="button">Print Department</button>
+        </div>
+      </div>
+
+      <aside class="department-profile-side">
+        <button id="assignHodButton" class="department-action-button" type="button">Assign HOD</button>
+        <select id="assignRoleSelect" class="department-search-input">
+          <option>Assign Role</option>
+          <option>Lead</option>
+          <option>Manager</option>
+          <option>Specialist</option>
+        </select>
+        <input id="departmentMemberSearch" class="department-search-input" type="text" placeholder="Search department...">
+        <div class="department-member-dropzone"></div>
+        <button id="addDepartmentMemberButton" class="department-action-button" type="button">Add Members</button>
+      </aside>
+    </div>
+  </div>
+</div>
+
+<div id="departmentDeleteConfirmWindow" class="employee-modal-window" aria-hidden="true">
+  <div class="employee-modal-panel department-warning-panel" role="dialog" aria-modal="true" aria-labelledby="departmentDeleteConfirmTitle">
+    <div class="employee-modal-header">
+      <h2 id="departmentDeleteConfirmTitle">Delete Department</h2>
+    </div>
+    <div class="department-warning-copy">
+      <p>You are about to delete a department. Are you sure?</p>
+    </div>
+    <div class="employee-modal-actions warning-actions">
+      <button id="confirmDepartmentDeleteButton" class="employee-submit-button department-delete-button" type="button">Delete</button>
+      <button id="cancelDepartmentDeleteButton" class="employee-submit-button" type="button">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<div id="contractModal" class="employee-modal-window" aria-hidden="true">
+  <div class="employee-modal-panel contract-modal-panel" role="dialog" aria-modal="true" aria-labelledby="contractModalTitle">
+    <div class="employee-modal-header">
+      <button class="employee-back-button" type="button" onclick="closeContractModal()" aria-label="Close add contract">
+        <i class="fa-solid fa-circle-chevron-left"></i>
+      </button>
+      <h2 id="contractModalTitle">Add Contract</h2>
+    </div>
+
+    <div class="employee-modal-body">
+      <div class="employee-avatar-column">
+        <div class="employee-avatar-shell">
+          <i class="fa-solid fa-circle-user"></i>
+        </div>
+      </div>
+
+      <div class="employee-form-grid contract-form-grid">
+        <label>Name:<input id="contractNameInput" type="text"></label>
+        <label>Contract Number:<input id="contractNumberInput" type="text"></label>
+        <label>Account Number:<input id="contractAccountNumberInput" type="text"></label>
+        <label>Account Details:<input id="contractAccountDetailsInput" type="text"></label>
+        <label>Company:<input id="contractCompanyInput" type="text"></label>
+        <label>Role:<input id="contractRoleInput" type="text"></label>
+        <label>Contract Date:<input id="contractDateInput" type="date"></label>
+        <label>
+          Contract Type:
+          <select id="contractTypeInput">
+            <option>Internship</option>
+            <option>Temporary</option>
+            <option>Freelance</option>
+            <option>Permanent</option>
+          </select>
+        </label>
+        <label>Total Payment:<input id="contractPaymentInput" type="number" min="0" step="1000"></label>
+      </div>
+    </div>
+
+    <div class="employee-document-section">
+      <h3>Documentation</h3>
+      <label class="employee-document-dropzone" for="contractDocumentsInput">
+        <span class="employee-document-plus">+</span>
+        <span>Click + or drag to add document</span>
+      </label>
+      <input id="contractDocumentsInput" type="file" multiple hidden>
+      <div id="contractDocumentsPreview" class="document-upload-preview"></div>
+    </div>
+
+    <div id="contractStatusActions" class="profile-status-actions contract-status-actions" style="display:none;">
+      <button type="button" class="status-action status-retire" onclick="updateEditingContractStatus('Completed')">Completed</button>
+      <button type="button" class="status-action status-fire" onclick="updateEditingContractStatus('Terminated')">Terminated</button>
+    </div>
+
+    <div class="employee-modal-actions">
+      <button id="contractSaveButton" class="employee-submit-button" type="button">Add</button>
+    </div>
+  </div>
+</div>
+
+<div id="contractProfileWindow" class="employee-modal-window" aria-hidden="true">
+  <div class="employee-modal-panel profile-modal-panel" role="dialog" aria-modal="true" aria-labelledby="contractProfileTitle">
+    <div class="employee-modal-header">
+      <button class="employee-back-button" type="button" onclick="closeContractProfile()" aria-label="Close contract profile">
+        <i class="fa-solid fa-circle-chevron-left"></i>
+      </button>
+      <h2 id="contractProfileTitle">Contract Profile</h2>
+    </div>
+
+    <div class="employee-modal-body">
+      <div class="employee-avatar-column">
+        <div class="employee-avatar-shell">
+          <i class="fa-solid fa-circle-user"></i>
+        </div>
+      </div>
+
+      <div class="employee-form-grid contract-form-grid">
+        <label>Name:<input id="profileContractName" type="text" readonly></label>
+        <label>Contract Number:<input id="profileContractNumber" type="text" readonly></label>
+        <label>Account Number:<input id="profileContractAccountNumber" type="text" readonly></label>
+        <label>Account Details:<input id="profileContractAccountDetails" type="text" readonly></label>
+        <label>Company:<input id="profileContractCompany" type="text" readonly></label>
+        <label>Role:<input id="profileContractRole" type="text" readonly></label>
+        <label>Contract Date:<input id="profileContractDate" type="text" readonly></label>
+        <label>Contract Type:<input id="profileContractType" type="text" readonly></label>
+        <label>Total Payment:<input id="profileContractPayment" type="text" readonly></label>
+        <label>Balance:<input id="profileContractBalance" type="text" readonly></label>
+      </div>
+    </div>
+
+    <div class="employee-profile-lower contract-profile-lower">
+      <section class="profile-history-card">
+        <h3>Payment History</h3>
+        <table class="salary-history-table">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Deductions</th>
+              <th>Payment</th>
+            </tr>
+          </thead>
+          <tbody id="contractPaymentHistoryBody"></tbody>
+        </table>
+        <button class="employee-submit-button small-button" type="button">Print PDF</button>
+      </section>
+
+      <section class="profile-documents-card">
+        <h3>Documents</h3>
+        <div id="contractDocumentsGrid" class="profile-documents-grid"></div>
+      </section>
+    </div>
+
+    <div class="profile-status-actions">
+      <button type="button" class="status-action status-retire" onclick="updateContractStatus('Completed')">Completed</button>
+      <button type="button" class="status-action status-fire" onclick="updateContractStatus('Terminated')">Terminated</button>
+    </div>
+  </div>
+</div>
+
+<script src="shared/paye.js"></script>
+<script src="shared/statutory-deductions.js"></script>
+<script src="js/rendered.js"></script>
+<script src="js/api.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HexaPay Startup</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #163b3d;
+      --panel: rgba(7, 27, 29, 0.36);
+      --line: rgba(126, 229, 236, 0.18);
+      --text: #f2fbfb;
+      --muted: rgba(242, 251, 251, 0.78);
+      --danger: #ff937d;
+      --accentA: #3396ff;
+      --accentB: #48d3bb;
+      --idle: rgba(255, 255, 255, 0.18);
+      --active: rgba(126, 229, 236, 0.92);
+      --complete: rgba(72, 211, 187, 0.98);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      overflow: hidden;
+      font-family: "Segoe UI", "Helvetica Neue", sans-serif;
+      background:
+        radial-gradient(circle at top, rgba(72, 211, 187, 0.18), transparent 48%),
+        linear-gradient(160deg, #1d5254 0%, var(--bg) 58%, #10292a 100%);
+      color: var(--text);
+    }
+
+    body {
+      -webkit-app-region: drag;
+    }
+
+    button {
+      -webkit-app-region: no-drag;
+      font: inherit;
+    }
+
+    .shell {
+      width: 100%;
+      height: 100%;
+      display: grid;
+      place-items: center;
+      padding: 18px;
+    }
+
+    .panel {
+      width: 100%;
+      height: 100%;
+      border-radius: 20px;
+      border: 1px solid var(--line);
+      background: var(--panel);
+      box-shadow: 0 22px 48px rgba(0, 0, 0, 0.28);
+      backdrop-filter: blur(6px);
+      padding: 18px 20px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand img {
+      width: 40px;
+      height: 40px;
+      object-fit: contain;
+      flex: 0 0 auto;
+    }
+
+    .brand-copy {
+      min-width: 0;
+    }
+
+    .brand-copy h1 {
+      margin: 0;
+      font-size: 28px;
+      line-height: 1;
+      letter-spacing: -0.04em;
+      font-weight: 700;
+      background: linear-gradient(90deg, var(--accentA), var(--accentB));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .brand-copy p {
+      margin: 4px 0 0;
+      font-size: 11px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .status-card {
+      border-radius: 16px;
+      border: 1px solid rgba(126, 229, 236, 0.14);
+      background: rgba(0, 0, 0, 0.12);
+      padding: 12px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .status-card h2 {
+      margin: 0;
+      font-size: 16px;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+    }
+
+    .status-card p {
+      margin: 0;
+      font-size: 12px;
+      line-height: 1.4;
+      color: var(--muted);
+      min-height: 32px;
+    }
+
+    .steps {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: grid;
+      gap: 8px;
+      flex: 1 1 auto;
+    }
+
+    .step {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 0;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .step-indicator {
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+      background: var(--idle);
+      box-shadow: 0 0 0 5px rgba(255, 255, 255, 0.03);
+      flex: 0 0 auto;
+      transition: transform 140ms ease, background-color 140ms ease, box-shadow 140ms ease;
+    }
+
+    .step[data-state="active"] .step-indicator {
+      background: var(--active);
+      box-shadow: 0 0 0 5px rgba(126, 229, 236, 0.14);
+      transform: scale(1.08);
+    }
+
+    .step[data-state="complete"] .step-indicator {
+      background: var(--complete);
+      box-shadow: 0 0 0 5px rgba(72, 211, 187, 0.16);
+    }
+
+    .step[data-state="error"] .step-indicator {
+      background: var(--danger);
+      box-shadow: 0 0 0 5px rgba(255, 147, 125, 0.12);
+    }
+
+    .step strong {
+      display: block;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .step span {
+      display: block;
+      margin-top: 2px;
+    }
+
+    .error-banner {
+      display: none;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 147, 125, 0.28);
+      background: rgba(76, 17, 10, 0.34);
+      padding: 10px 12px;
+      font-size: 12px;
+      line-height: 1.4;
+      color: #ffd4cb;
+    }
+
+    .error-banner[data-visible="true"] {
+      display: block;
+    }
+
+    .actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+      padding-top: 2px;
+    }
+
+    .actions button {
+      border: 0;
+      border-radius: 999px;
+      padding: 10px 14px;
+      cursor: pointer;
+      transition: transform 140ms ease, opacity 140ms ease, background-color 140ms ease;
+    }
+
+    .actions button:hover {
+      transform: translateY(-1px);
+    }
+
+    .actions button:disabled {
+      opacity: 0.65;
+      cursor: default;
+      transform: none;
+    }
+
+    .ghost {
+      background: rgba(255, 255, 255, 0.1);
+      color: var(--text);
+    }
+
+    .primary {
+      background: linear-gradient(90deg, var(--accentA), var(--accentB));
+      color: #052224;
+      font-weight: 700;
+    }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <section class="panel" aria-live="polite">
+      <div class="brand">
+        <img src="Assets/HexaPayEMBLEM.png" alt="HexaPay logo">
+        <div class="brand-copy">
+          <h1>HexaPay</h1>
+          <p>Startup validation</p>
+        </div>
+      </div>
+
+      <div class="status-card">
+        <h2 id="statusTitle">Starting HexaPay</h2>
+        <p id="statusDetail">Preparing startup checks.</p>
+      </div>
+
+      <ol class="steps">
+        <li class="step" data-step="start" data-state="active">
+          <div class="step-indicator" aria-hidden="true"></div>
+          <div>
+            <strong>Starting HexaPay</strong>
+            <span>Preparing desktop startup.</span>
+          </div>
+        </li>
+        <li class="step" data-step="connection" data-state="idle">
+          <div class="step-indicator" aria-hidden="true"></div>
+          <div>
+            <strong>Checking server connection</strong>
+            <span>Connecting to the configured backend.</span>
+          </div>
+        </li>
+        <li class="step" data-step="health" data-state="idle">
+          <div class="step-indicator" aria-hidden="true"></div>
+          <div>
+            <strong>Validating backend health</strong>
+            <span>Waiting for a healthy `/health` response.</span>
+          </div>
+        </li>
+      </ol>
+
+      <div id="errorBanner" class="error-banner" data-visible="false"></div>
+
+      <div class="actions">
+        <button id="exitButton" class="ghost" type="button">Exit</button>
+        <button id="retryButton" class="primary" type="button" hidden>Retry</button>
+      </div>
+    </section>
+  </main>
+
+  <script src="splash.js"></script>
+</body>
+</html>
