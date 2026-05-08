@@ -1,0 +1,31 @@
+const express = require("express")
+
+const authRoutes = require("./auth.routes")
+const companyRoutes = require("./company.routes")
+const membershipRoutes = require("./membership.routes")
+const employeeRoutes = require("./employee.routes")
+const departmentRoutes = require("./department.routes")
+const contractRoutes = require("./contract.routes")
+const attendanceRoutes = require("./attendance.routes")
+const leaveRoutes = require("./leave.routes")
+const holidayRoutes = require("./holiday.routes")
+const payrollRoutes = require("./payroll.routes")
+const settingsRoutes = require("./settings.routes")
+const exportRoutes = require("./export.routes")
+
+const router = express.Router()
+
+router.use("/auth", authRoutes)
+router.use("/companies", companyRoutes)
+router.use("/companies", membershipRoutes)
+router.use("/companies", employeeRoutes)
+router.use("/companies", departmentRoutes)
+router.use("/companies", contractRoutes)
+router.use("/companies", attendanceRoutes)
+router.use("/companies", leaveRoutes)
+router.use("/companies", holidayRoutes)
+router.use("/companies", payrollRoutes)
+router.use("/companies", settingsRoutes)
+router.use("/companies", exportRoutes)
+
+module.exports = router

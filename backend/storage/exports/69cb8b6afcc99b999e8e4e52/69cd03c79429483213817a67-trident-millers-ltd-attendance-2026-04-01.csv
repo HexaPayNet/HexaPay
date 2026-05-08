@@ -1,0 +1,6 @@
+"Employee Name","Department","Role","Date","Check In","Check Out","Worked Hours","Mode","Approval Status"
+"simom","CASUALS","loader","2026-04-01","07:00","17:00","10","manual","approved"
+"Emmy Belinda","HR","Office assistant","2026-04-01","07:00","18:10","11.17","manual","approved"
+"Victor Odhiambo","ACCOUNTS","Accountant","2026-04-01","07:00","18:30","11.5","manual","approved"
+"Fortune Omondi","ICT","tech","2026-04-01","07:50","18:00","10.17","manual","approved"
+"simom","CASUALS","loader","2026-03-31","07:20","10:45","3.42","manual","approved"
